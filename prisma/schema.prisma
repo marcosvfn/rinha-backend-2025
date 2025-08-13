@@ -1,0 +1,28 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Payment {
+  correlationId String   @id @map("correlation_id") @db.Uuid
+  amount        Decimal  @db.Decimal(10, 2)
+  requestedAt   DateTime @map("requested_at") @db.Timestamp()
+  processor     String   @db.VarChar(20)
+  status        String   @db.VarChar(20)
+  processedAt   DateTime? @map("processed_at") @db.Timestamp()
+  fee           Decimal? @db.Decimal(10, 2)
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamp()
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamp()
+
+  @@index([processor, status], map: "idx_payments_processor_status")
+  @@index([requestedAt], map: "idx_payments_requested_at")
+  @@index([processor, requestedAt], map: "idx_payments_processor_requested_at")
+  @@map("payments")
+}
