@@ -1,6 +1,6 @@
-import { ProcessorType as ProcessorTypeEnum } from '../../shared/enums/payment-enums';
-import { ValidationError } from '../../shared/errors/app-error';
-import { ErrorCode } from '../../shared/enums/payment-enums';
+import { ProcessorType as ProcessorTypeEnum } from "@/shared/enums/payment-enums";
+import { ValidationError } from "@/shared/errors/app-error";
+import { ErrorCode } from "@/shared/enums/payment-enums";
 
 export class ProcessorType {
   private readonly _value: ProcessorTypeEnum;

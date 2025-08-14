@@ -1,5 +1,5 @@
-import { LoggerService } from '../../shared/logging';
-import { Result } from '../../shared/result/result';
+import { LoggerService } from "@/shared/logging";
+import { Result } from "@/shared/result/result";
 
 export interface UseCase<TRequest, TResponse> {
   execute(request: TRequest): Promise<Result<TResponse, Error>>;
@@ -78,12 +78,12 @@ export abstract class BaseUseCase<TRequest, TResponse> implements UseCase<TReque
   protected sanitizeRequest(request: TRequest): any {
     // Por padrão, não loggar o request completo por segurança
     // Subclasses podem sobrescrever para loggar campos específicos
-    return '[request-sanitized]';
+    return "[request-sanitized]";
   }
 
   protected logBusinessEvent(event: string, context?: Record<string, any>): void {
     this.logger.info(event, {
-      operation: 'business_event',
+      operation: "business_event",
       useCase: this.useCaseName,
       ...context
     });

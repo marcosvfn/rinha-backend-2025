@@ -32,7 +32,7 @@ export class Success<T> extends Result<T> {
   }
 
   public getError(): never {
-    throw new Error('Cannot get error from success result');
+    throw new Error("Cannot get error from success result");
   }
 }
 
@@ -45,7 +45,7 @@ export class Failure<E> extends Result<never, E> {
   }
 
   public getValue(): never {
-    throw new Error('Cannot get value from failure result');
+    throw new Error("Cannot get value from failure result");
   }
 
   public getError(): E {

@@ -1,17 +1,17 @@
-import { PrismaClient } from '@prisma/client';
-import { Payment, PaymentSummary } from '../../domain/entities/payment';
-import { PaymentRepository } from '../../domain/repositories/payment-repository';
-import { CorrelationId } from '../../domain/value-objects/correlation-id';
-import { Money } from '../../domain/value-objects/money';
-import { ProcessorType } from '../../domain/value-objects/processor-type';
-import { PaymentStatus, ProcessorType as ProcessorTypeEnum } from '../../shared/enums/payment-enums';
-import { LoggerService } from '../../shared/logging';
+import { PrismaClient } from "@prisma/client";
+import { Payment, PaymentSummary } from "@/domain/entities/payment";
+import { PaymentRepository } from "@/domain/repositories/payment-repository";
+import { CorrelationId } from "@/domain/value-objects/correlation-id";
+import { Money } from "@/domain/value-objects/money";
+import { ProcessorType } from "@/domain/value-objects/processor-type";
+import { PaymentStatus, ProcessorType as ProcessorTypeEnum } from "@/shared/enums/payment-enums";
+import { LoggerService } from "@/shared/logging";
 
 export class PrismaPaymentRepository implements PaymentRepository {
   private logger: LoggerService;
 
   constructor(private prisma: PrismaClient) {
-    this.logger = new LoggerService('prisma-payment-repository');
+    this.logger = new LoggerService("prisma-payment-repository");
   }
 
   async save(payment: Payment): Promise<void> {
@@ -40,10 +40,10 @@ export class PrismaPaymentRepository implements PaymentRepository {
       });
       
       const duration = Date.now() - startTime;
-      this.logger.logDatabaseOperation('save', 'payments', duration, true);
+      this.logger.logDatabaseOperation("save", "payments", duration, true);
     } catch (error) {
       const duration = Date.now() - startTime;
-      this.logger.logDatabaseOperation('save', 'payments', duration, false, error as Error);
+      this.logger.logDatabaseOperation("save", "payments", duration, false, error as Error);
       throw error;
     }
   }
@@ -59,7 +59,7 @@ export class PrismaPaymentRepository implements PaymentRepository {
       });
       
       const duration = Date.now() - startTime;
-      this.logger.logDatabaseOperation('find', 'payments', duration, true);
+      this.logger.logDatabaseOperation("find", "payments", duration, true);
 
       if (!paymentData) {
         return null;
@@ -76,7 +76,7 @@ export class PrismaPaymentRepository implements PaymentRepository {
       );
     } catch (error) {
       const duration = Date.now() - startTime;
-      this.logger.logDatabaseOperation('find', 'payments', duration, false, error as Error);
+      this.logger.logDatabaseOperation("find", "payments", duration, false, error as Error);
       throw error;
     }
   }
@@ -88,12 +88,12 @@ export class PrismaPaymentRepository implements PaymentRepository {
       const whereClause = this.buildDateWhereClause(from, to);
       
       const [defaultStats, fallbackStats] = await Promise.all([
-        this.getProcessorStats('default', whereClause),
-        this.getProcessorStats('fallback', whereClause),
+        this.getProcessorStats("default", whereClause),
+        this.getProcessorStats("fallback", whereClause),
       ]);
 
       const duration = Date.now() - startTime;
-      this.logger.logDatabaseOperation('getSummary', 'payments', duration, true);
+      this.logger.logDatabaseOperation("getSummary", "payments", duration, true);
 
       return {
         default: {
@@ -107,7 +107,7 @@ export class PrismaPaymentRepository implements PaymentRepository {
       };
     } catch (error) {
       const duration = Date.now() - startTime;
-      this.logger.logDatabaseOperation('getSummary', 'payments', duration, false, error as Error);
+      this.logger.logDatabaseOperation("getSummary", "payments", duration, false, error as Error);
       throw error;
     }
   }
@@ -127,12 +127,12 @@ export class PrismaPaymentRepository implements PaymentRepository {
       });
 
       const duration = Date.now() - startTime;
-      this.logger.logDatabaseOperation('count', 'payments', duration, true);
+      this.logger.logDatabaseOperation("count", "payments", duration, true);
 
       return count;
     } catch (error) {
       const duration = Date.now() - startTime;
-      this.logger.logDatabaseOperation('count', 'payments', duration, false, error as Error);
+      this.logger.logDatabaseOperation("count", "payments", duration, false, error as Error);
       throw error;
     }
   }
@@ -155,12 +155,12 @@ export class PrismaPaymentRepository implements PaymentRepository {
       });
 
       const duration = Date.now() - startTime;
-      this.logger.logDatabaseOperation('sum', 'payments', duration, true);
+      this.logger.logDatabaseOperation("sum", "payments", duration, true);
 
       return Number(result._sum.amount || 0);
     } catch (error) {
       const duration = Date.now() - startTime;
-      this.logger.logDatabaseOperation('sum', 'payments', duration, false, error as Error);
+      this.logger.logDatabaseOperation("sum", "payments", duration, false, error as Error);
       throw error;
     }
   }

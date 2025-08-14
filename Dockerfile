@@ -1,6 +1,9 @@
 # Use Node.js 18 LTS Alpine for smaller image size
 FROM node:18-alpine AS builder
 
+# Install required packages for Prisma
+RUN apk add --no-cache openssl libc6-compat
+
 # Set working directory
 WORKDIR /app
 
@@ -23,6 +26,9 @@ RUN npm run build
 # Production stage
 FROM node:18-alpine AS production
 
+# Install required packages for Prisma
+RUN apk add --no-cache openssl libc6-compat
+
 # Create app user for security
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nextjs -u 1001
@@ -33,6 +39,7 @@ WORKDIR /app
 # Copy built application
 COPY --from=builder --chown=nextjs:nodejs /app/dist ./dist
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/package*.json ./
 
 # Create logs directory

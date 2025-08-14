@@ -1,6 +1,6 @@
-import { APP_CONSTANTS } from '../../shared/constants/app-constants';
-import { ValidationError } from '../../shared/errors/app-error';
-import { ErrorCode } from '../../shared/enums/payment-enums';
+import { APP_CONSTANTS } from "@/shared/constants/app-constants";
+import { ValidationError } from "@/shared/errors/app-error";
+import { ErrorCode } from "@/shared/enums/payment-enums";
 
 export class Money {
   private readonly _amount: number;
@@ -11,9 +11,9 @@ export class Money {
   }
 
   private validate(amount: number): void {
-    if (typeof amount !== 'number' || isNaN(amount)) {
+    if (typeof amount !== "number" || isNaN(amount)) {
       throw new ValidationError(
-        'Amount must be a valid number',
+        "Amount must be a valid number",
         ErrorCode.INVALID_AMOUNT
       );
     }

@@ -1,6 +1,6 @@
-import { Payment, PaymentSummary } from '../entities/payment';
-import { CorrelationId } from '../value-objects/correlation-id';
-import { ProcessorType } from '../value-objects/processor-type';
+import { Payment, PaymentSummary } from "@/domain/entities/payment";
+import { CorrelationId } from "@/domain/value-objects/correlation-id";
+import { ProcessorType } from "@/domain/value-objects/processor-type";
 
 export interface PaymentRepository {
   save(payment: Payment): Promise<void>;

@@ -1,9 +1,9 @@
-import { PaymentSummary } from '../../domain/entities/payment';
-import { PaymentRepository } from '../../domain/repositories/payment-repository';
-import { BaseUseCase } from '../base/base-use-case';
-import { Result } from '../../shared/result/result';
-import { InternalError } from '../../shared/errors/app-error';
-import { ErrorCode } from '../../shared/enums/payment-enums';
+import { PaymentSummary } from "@/domain/entities/payment";
+import { PaymentRepository } from "@/domain/repositories/payment-repository";
+import { BaseUseCase } from "@/application/base/base-use-case";
+import { Result } from "@/shared/result/result";
+import { InternalError } from "@/shared/errors/app-error";
+import { ErrorCode } from "@/shared/enums/payment-enums";
 
 export interface GetPaymentSummaryRequest {
   from?: string;
@@ -12,7 +12,7 @@ export interface GetPaymentSummaryRequest {
 
 export class GetPaymentSummaryUseCase extends BaseUseCase<GetPaymentSummaryRequest, PaymentSummary> {
   constructor(private paymentRepository: PaymentRepository) {
-    super('get-payment-summary-use-case');
+    super("get-payment-summary-use-case");
   }
 
   protected async executeImpl(request: GetPaymentSummaryRequest): Promise<Result<PaymentSummary, Error>> {
@@ -21,7 +21,7 @@ export class GetPaymentSummaryUseCase extends BaseUseCase<GetPaymentSummaryReque
     const fromDate = from ? new Date(from) : undefined;
     const toDate = to ? new Date(to) : undefined;
 
-    this.logBusinessEvent('payment_summary_requested', {
+    this.logBusinessEvent("payment_summary_requested", {
       from,
       to,
       hasDateFilter: !!(from || to)
@@ -29,7 +29,7 @@ export class GetPaymentSummaryUseCase extends BaseUseCase<GetPaymentSummaryReque
 
     const summary = await this.paymentRepository.getSummary(fromDate, toDate);
 
-    this.logBusinessEvent('payment_summary_generated', {
+    this.logBusinessEvent("payment_summary_generated", {
       defaultRequests: summary.default.totalRequests,
       defaultAmount: summary.default.totalAmount,
       fallbackRequests: summary.fallback.totalRequests,
@@ -44,7 +44,7 @@ export class GetPaymentSummaryUseCase extends BaseUseCase<GetPaymentSummaryReque
   protected handleUnexpectedError(error: Error): Result<PaymentSummary, Error> {
     return Result.fail(
       new InternalError(
-        'Unexpected error while getting payment summary',
+        "Unexpected error while getting payment summary",
         ErrorCode.PAYMENT_PROCESSING_FAILED
       )
     );

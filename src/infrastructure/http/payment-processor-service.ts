@@ -1,20 +1,20 @@
-import axios, { AxiosInstance } from 'axios';
-import { Payment, ProcessorConfig } from '../../domain/entities/payment';
-import { PaymentProcessorService } from '../../domain/services/payment-processor-service';
-import { LoggerService } from '../../shared/logging';
-import { APP_CONSTANTS } from '../../shared/constants/app-constants';
+import axios, { AxiosInstance } from "axios";
+import { Payment, ProcessorConfig } from "@/domain/entities/payment";
+import { PaymentProcessorService } from "@/domain/services/payment-processor-service";
+import { LoggerService } from "@/shared/logging";
+import { APP_CONSTANTS } from "@/shared/constants/app-constants";
 
 export class HttpPaymentProcessorService implements PaymentProcessorService {
   private httpClient: AxiosInstance;
   private logger: LoggerService;
 
   constructor() {
-    this.logger = new LoggerService('http-payment-processor-service');
+    this.logger = new LoggerService("http-payment-processor-service");
     
     this.httpClient = axios.create({
       timeout: APP_CONSTANTS.HTTP.REQUEST_TIMEOUT_MS,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
   }
@@ -23,12 +23,12 @@ export class HttpPaymentProcessorService implements PaymentProcessorService {
     const startTime = Date.now();
     
     try {
-      this.logger.debug('Sending payment to processor', {
+      this.logger.debug("Sending payment to processor", {
         processor: processor.name,
         correlationId: payment.correlationId.value,
         amount: payment.amount.value,
         url: processor.url,
-        operation: 'payment_processor_request'
+        operation: "payment_processor_request"
       });
       
       const response = await this.httpClient.post(`${processor.url}/payments`, {
@@ -40,17 +40,17 @@ export class HttpPaymentProcessorService implements PaymentProcessorService {
       const duration = Date.now() - startTime;
       const success = response.status >= 200 && response.status < 300;
       
-      this.logger.info('Payment processor response received', {
+      this.logger.info("Payment processor response received", {
         processor: processor.name,
         correlationId: payment.correlationId.value,
         statusCode: response.status,
         duration,
         success,
-        operation: 'payment_processor_response'
+        operation: "payment_processor_response"
       });
       
       this.logger.logPerformanceMetrics({
-        operation: 'payment_processor_call',
+        operation: "payment_processor_call",
         duration,
         success,
         processor: processor.name
@@ -64,11 +64,11 @@ export class HttpPaymentProcessorService implements PaymentProcessorService {
         processor: processor.name,
         correlationId: payment.correlationId.value,
         duration,
-        operation: 'payment_processor_error'
+        operation: "payment_processor_error"
       });
       
       this.logger.logPerformanceMetrics({
-        operation: 'payment_processor_call',
+        operation: "payment_processor_call",
         duration,
         success: false,
         processor: processor.name
@@ -82,22 +82,22 @@ export class HttpPaymentProcessorService implements PaymentProcessorService {
     const startTime = Date.now();
     
     try {
-      this.logger.debug('Checking processor health', {
+      this.logger.debug("Checking processor health", {
         processor: processor.name,
         url: processor.url,
-        operation: 'health_check_request'
+        operation: "health_check_request"
       });
       
       const response = await this.httpClient.get(`${processor.url}/payments/service-health`);
       const duration = Date.now() - startTime;
       
       if (response.status === 429) {
-        this.logger.warn('Health check rate limited', {
+        this.logger.warn("Health check rate limited", {
           processor: processor.name,
           duration,
-          operation: 'health_check_rate_limited'
+          operation: "health_check_rate_limited"
         });
-        throw new Error('Rate limit exceeded');
+        throw new Error("Rate limit exceeded");
       }
       
       const healthData = {
@@ -112,7 +112,7 @@ export class HttpPaymentProcessorService implements PaymentProcessorService {
       );
       
       this.logger.logPerformanceMetrics({
-        operation: 'health_check',
+        operation: "health_check",
         duration,
         success: true,
         processor: processor.name
@@ -125,11 +125,11 @@ export class HttpPaymentProcessorService implements PaymentProcessorService {
       this.logger.error(`Health check failed for processor ${processor.name}`, error as Error, {
         processor: processor.name,
         duration,
-        operation: 'health_check_error'
+        operation: "health_check_error"
       });
       
       this.logger.logPerformanceMetrics({
-        operation: 'health_check',
+        operation: "health_check",
         duration,
         success: false,
         processor: processor.name

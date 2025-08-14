@@ -1,6 +1,6 @@
-import { APP_CONSTANTS } from '../../shared/constants/app-constants';
-import { ValidationError } from '../../shared/errors/app-error';
-import { ErrorCode } from '../../shared/enums/payment-enums';
+import { APP_CONSTANTS } from "@/shared/constants/app-constants";
+import { ValidationError } from "@/shared/errors/app-error";
+import { ErrorCode } from "@/shared/enums/payment-enums";
 
 export class CorrelationId {
   private readonly _value: string;
@@ -11,16 +11,16 @@ export class CorrelationId {
   }
 
   private validate(value: string): void {
-    if (!value || typeof value !== 'string') {
+    if (!value || typeof value !== "string") {
       throw new ValidationError(
-        'CorrelationId cannot be empty',
+        "CorrelationId cannot be empty",
         ErrorCode.INVALID_CORRELATION_ID
       );
     }
 
     if (!APP_CONSTANTS.VALIDATION.UUID_REGEX.test(value)) {
       throw new ValidationError(
-        'CorrelationId must be a valid UUID',
+        "CorrelationId must be a valid UUID",
         ErrorCode.INVALID_CORRELATION_ID
       );
     }

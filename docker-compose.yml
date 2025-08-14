@@ -1,7 +1,6 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  # Load Balancer - nginx
   nginx:
     image: nginx:1.25-alpine
     ports:
@@ -20,13 +19,12 @@ services:
       - payment-processor
       - internal
 
-  # Application Instance 1
   app1:
     build: .
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/rinha
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/rinha?sslmode=disable
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - DEFAULT_PROCESSOR_URL=http://payment-processor-default:8080
@@ -45,15 +43,14 @@ services:
     networks:
       - payment-processor
       - internal
-    command: sh -c "npx prisma migrate deploy && node dist/main.js"
+    command: sh -c "npx prisma db push --accept-data-loss && node dist/main.js"
 
-  # Application Instance 2  
   app2:
     build: .
     environment:
       - NODE_ENV=production
       - PORT=3000
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/rinha
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/rinha?sslmode=disable
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - DEFAULT_PROCESSOR_URL=http://payment-processor-default:8080
@@ -74,7 +71,60 @@ services:
       - internal
     command: sh -c "node dist/main.js"
 
-  # PostgreSQL Database
+  worker1:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/rinha?sslmode=disable
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DEFAULT_PROCESSOR_URL=http://payment-processor-default:8080
+      - FALLBACK_PROCESSOR_URL=http://payment-processor-fallback:8080
+      - LOG_LEVEL=info
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: "96MB"
+    networks:
+      - payment-processor
+      - internal
+    restart: unless-stopped
+
+  worker2:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/rinha?sslmode=disable
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DEFAULT_PROCESSOR_URL=http://payment-processor-default:8080
+      - FALLBACK_PROCESSOR_URL=http://payment-processor-fallback:8080
+      - LOG_LEVEL=info
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: "96MB"
+    networks:
+      - payment-processor
+      - internal
+    restart: unless-stopped
+
   postgres:
     image: postgres:15-alpine
     environment:
@@ -112,7 +162,6 @@ services:
       -c min_wal_size=32MB
       -c max_wal_size=64MB
 
-  # Redis Cache
   redis:
     image: redis:7-alpine
     deploy:
@@ -139,9 +188,7 @@ volumes:
   postgres_data:
 
 networks:
-  # External network for payment processors (must be created first)
   payment-processor:
     external: true
-  # Internal network for services communication
   internal:
     driver: bridge

@@ -1,19 +1,19 @@
-import { ErrorCode } from '../../shared/enums/payment-enums';
+import { ErrorCode } from "@/shared/enums/payment-enums";
 import {
   ConflictError,
   InternalError,
   ServiceUnavailableError,
-} from '../../shared/errors/app-error';
-import { Result } from '../../shared/result/result';
-import { Payment, ProcessorConfig } from '../../domain/entities/payment';
-import { PaymentRepository } from '../../domain/repositories/payment-repository';
-import { HealthRepository } from '../../domain/repositories/health-repository';
-import { CorrelationId } from '../../domain/value-objects/correlation-id';
-import { Money } from '../../domain/value-objects/money';
-import { ProcessorType } from '../../domain/value-objects/processor-type';
-import { PaymentProcessorService } from '../../domain/services/payment-processor-service';
-import { ProcessorOrchestrationService } from '../services/processor-orchestration-service';
-import { BaseUseCase } from '../base/base-use-case';
+} from "@/shared/errors/app-error";
+import { Result } from "@/shared/result/result";
+import { Payment, ProcessorConfig } from "@/domain/entities/payment";
+import { PaymentRepository } from "@/domain/repositories/payment-repository";
+import { HealthRepository } from "@/domain/repositories/health-repository";
+import { CorrelationId } from "@/domain/value-objects/correlation-id";
+import { Money } from "@/domain/value-objects/money";
+import { ProcessorType } from "@/domain/value-objects/processor-type";
+import { PaymentProcessorService } from "@/domain/services/payment-processor-service";
+import { ProcessorOrchestrationService } from "@/application/services/processor-orchestration-service";
+import { BaseUseCase } from "@/application/base/base-use-case";
 
 export interface ProcessPaymentRequest {
   correlationId: CorrelationId;
@@ -29,7 +29,7 @@ export class ProcessPaymentUseCase extends BaseUseCase<ProcessPaymentRequest, Pa
     private paymentProcessorService: PaymentProcessorService,
     private processorConfigs: Map<string, ProcessorConfig>
   ) {
-    super('process-payment-use-case');
+    super("process-payment-use-case");
     this.processorOrchestrationService = new ProcessorOrchestrationService(
       healthRepository,
       paymentProcessorService,
@@ -43,13 +43,13 @@ export class ProcessPaymentUseCase extends BaseUseCase<ProcessPaymentRequest, Pa
     // Verificar se pagamento já existe
     const existingPayment = await this.paymentRepository.findByCorrelationId(correlationId);
     if (existingPayment) {
-      this.logBusinessEvent('duplicate_payment_detected', {
+      this.logBusinessEvent("duplicate_payment_detected", {
         correlationId: correlationId.value
       });
       
       return Result.fail(
         new ConflictError(
-          'Payment with this correlation ID already exists',
+          "Payment with this correlation ID already exists",
           ErrorCode.PAYMENT_ALREADY_EXISTS
         )
       );
@@ -58,7 +58,7 @@ export class ProcessPaymentUseCase extends BaseUseCase<ProcessPaymentRequest, Pa
     // Criar novo pagamento
     const payment = Payment.create(correlationId, amount);
     
-    this.logBusinessEvent('payment_created', {
+    this.logBusinessEvent("payment_created", {
       correlationId: correlationId.value,
       amount: amount.value
     });
@@ -66,7 +66,7 @@ export class ProcessPaymentUseCase extends BaseUseCase<ProcessPaymentRequest, Pa
     // Selecionar melhor processador
     const processor = await this.processorOrchestrationService.selectBestProcessor();
     
-    this.logBusinessEvent('processor_selected', {
+    this.logBusinessEvent("processor_selected", {
       correlationId: correlationId.value,
       processor: processor.name
     });
@@ -81,7 +81,7 @@ export class ProcessPaymentUseCase extends BaseUseCase<ProcessPaymentRequest, Pa
     // Salvar pagamento
     await this.paymentRepository.save(payment);
     
-    this.logBusinessEvent('payment_saved', {
+    this.logBusinessEvent("payment_saved", {
       correlationId: correlationId.value,
       status: payment.status,
       processor: payment.processor.value
@@ -93,7 +93,7 @@ export class ProcessPaymentUseCase extends BaseUseCase<ProcessPaymentRequest, Pa
   protected handleUnexpectedError(_error: Error): Result<Payment, Error> {
     return Result.fail(
       new InternalError(
-        'Unexpected error during payment processing',
+        "Unexpected error during payment processing",
         ErrorCode.PAYMENT_PROCESSING_FAILED
       )
     );
@@ -122,7 +122,7 @@ export class ProcessPaymentUseCase extends BaseUseCase<ProcessPaymentRequest, Pa
           primaryProcessor.fee
         );
         
-        this.logBusinessEvent('payment_processed_successfully', {
+        this.logBusinessEvent("payment_processed_successfully", {
           correlationId: payment.correlationId.value,
           processor: primaryProcessor.name
         });
@@ -136,16 +136,16 @@ export class ProcessPaymentUseCase extends BaseUseCase<ProcessPaymentRequest, Pa
         {
           processor: primaryProcessor.name,
           correlationId: payment.correlationId.value,
-          operation: 'primary_processor_failure',
+          operation: "primary_processor_failure",
         }
       );
     }
 
     // Tentar fallback se primary era default
-    if (primaryProcessor.name === 'default') {
-      const fallbackProcessor = this.processorConfigs.get('fallback')!;
+    if (primaryProcessor.name === "default") {
+      const fallbackProcessor = this.processorConfigs.get("fallback")!;
       
-      this.logBusinessEvent('processor_fallback_triggered', {
+      this.logBusinessEvent("processor_fallback_triggered", {
         correlationId: payment.correlationId.value,
         fromProcessor: primaryProcessor.name,
         toProcessor: fallbackProcessor.name
@@ -163,7 +163,7 @@ export class ProcessPaymentUseCase extends BaseUseCase<ProcessPaymentRequest, Pa
             fallbackProcessor.fee
           );
           
-          this.logBusinessEvent('payment_processed_via_fallback', {
+          this.logBusinessEvent("payment_processed_via_fallback", {
             correlationId: payment.correlationId.value,
             processor: fallbackProcessor.name
           });
@@ -172,12 +172,12 @@ export class ProcessPaymentUseCase extends BaseUseCase<ProcessPaymentRequest, Pa
         }
       } catch (fallbackError) {
         this.logger.error(
-          'Fallback processor also failed',
+          "Fallback processor also failed",
           fallbackError as Error,
           {
             processor: fallbackProcessor.name,
             correlationId: payment.correlationId.value,
-            operation: 'fallback_processor_failure',
+            operation: "fallback_processor_failure",
           }
         );
       }
@@ -185,14 +185,14 @@ export class ProcessPaymentUseCase extends BaseUseCase<ProcessPaymentRequest, Pa
 
     payment.markAsFailed();
     
-    this.logBusinessEvent('payment_processing_failed', {
+    this.logBusinessEvent("payment_processing_failed", {
       correlationId: payment.correlationId.value,
       primaryProcessor: primaryProcessor.name
     });
     
     return Result.fail(
       new ServiceUnavailableError(
-        'All payment processors are currently unavailable',
+        "All payment processors are currently unavailable",
         ErrorCode.PROCESSOR_UNAVAILABLE
       )
     );

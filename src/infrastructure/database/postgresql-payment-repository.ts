@@ -1,17 +1,17 @@
-import { Pool } from 'pg';
-import { Payment, PaymentSummary } from '../../domain/entities/payment';
-import { PaymentRepository } from '../../domain/repositories/payment-repository';
-import { CorrelationId } from '../../domain/value-objects/correlation-id';
-import { Money } from '../../domain/value-objects/money';
-import { ProcessorType } from '../../domain/value-objects/processor-type';
-import { PaymentStatus, ProcessorType as ProcessorTypeEnum } from '../../shared/enums/payment-enums';
-import { LoggerService } from '../../shared/logging';
+import { Pool } from "pg";
+import { Payment, PaymentSummary } from "@/domain/entities/payment";
+import { PaymentRepository } from "@/domain/repositories/payment-repository";
+import { CorrelationId } from "@/domain/value-objects/correlation-id";
+import { Money } from "@/domain/value-objects/money";
+import { ProcessorType } from "@/domain/value-objects/processor-type";
+import { PaymentStatus, ProcessorType as ProcessorTypeEnum } from "@/shared/enums/payment-enums";
+import { LoggerService } from "@/shared/logging";
 
 export class PostgreSQLPaymentRepository implements PaymentRepository {
   private logger: LoggerService;
 
   constructor(private pool: Pool) {
-    this.logger = new LoggerService('postgresql-payment-repository');
+    this.logger = new LoggerService("postgresql-payment-repository");
   }
 
   async save(payment: Payment): Promise<void> {
@@ -40,10 +40,10 @@ export class PostgreSQLPaymentRepository implements PaymentRepository {
       ]);
       
       const duration = Date.now() - startTime;
-      this.logger.logDatabaseOperation('save', 'payments', duration, true);
+      this.logger.logDatabaseOperation("save", "payments", duration, true);
     } catch (error) {
       const duration = Date.now() - startTime;
-      this.logger.logDatabaseOperation('save', 'payments', duration, false, error as Error);
+      this.logger.logDatabaseOperation("save", "payments", duration, false, error as Error);
       throw error;
     }
   }
@@ -52,11 +52,11 @@ export class PostgreSQLPaymentRepository implements PaymentRepository {
     const startTime = Date.now();
     
     try {
-      const query = 'SELECT * FROM payments WHERE correlation_id = $1';
+      const query = "SELECT * FROM payments WHERE correlation_id = $1";
       const result = await this.pool.query(query, [correlationId.value]);
       
       const duration = Date.now() - startTime;
-      this.logger.logDatabaseOperation('find', 'payments', duration, true);
+      this.logger.logDatabaseOperation("find", "payments", duration, true);
 
       if (result.rows.length === 0) {
         return null;
@@ -74,7 +74,7 @@ export class PostgreSQLPaymentRepository implements PaymentRepository {
       );
     } catch (error) {
       const duration = Date.now() - startTime;
-      this.logger.logDatabaseOperation('find', 'payments', duration, false, error as Error);
+      this.logger.logDatabaseOperation("find", "payments", duration, false, error as Error);
       throw error;
     }
   }
@@ -96,17 +96,17 @@ export class PostgreSQLPaymentRepository implements PaymentRepository {
   }
 
   async countByProcessor(processor: ProcessorType, from?: Date, to?: Date): Promise<number> {
-    let query = 'SELECT COUNT(*) FROM payments WHERE processor = $1 AND status = $2';
+    let query = "SELECT COUNT(*) FROM payments WHERE processor = $1 AND status = $2";
     const params: any[] = [processor.value, PaymentStatus.PROCESSED];
 
     if (from && to) {
-      query += ' AND requested_at >= $3 AND requested_at <= $4';
+      query += " AND requested_at >= $3 AND requested_at <= $4";
       params.push(from, to);
     } else if (from) {
-      query += ' AND requested_at >= $3';
+      query += " AND requested_at >= $3";
       params.push(from);
     } else if (to) {
-      query += ' AND requested_at <= $3';
+      query += " AND requested_at <= $3";
       params.push(to);
     }
 
@@ -115,17 +115,17 @@ export class PostgreSQLPaymentRepository implements PaymentRepository {
   }
 
   async sumAmountByProcessor(processor: ProcessorType, from?: Date, to?: Date): Promise<number> {
-    let query = 'SELECT COALESCE(SUM(amount), 0) as total FROM payments WHERE processor = $1 AND status = $2';
+    let query = "SELECT COALESCE(SUM(amount), 0) as total FROM payments WHERE processor = $1 AND status = $2";
     const params: any[] = [processor.value, PaymentStatus.PROCESSED];
 
     if (from && to) {
-      query += ' AND requested_at >= $3 AND requested_at <= $4';
+      query += " AND requested_at >= $3 AND requested_at <= $4";
       params.push(from, to);
     } else if (from) {
-      query += ' AND requested_at >= $3';
+      query += " AND requested_at >= $3";
       params.push(from);
     } else if (to) {
-      query += ' AND requested_at <= $3';
+      query += " AND requested_at <= $3";
       params.push(to);
     }
 

@@ -1,6 +1,6 @@
-import { Logger } from 'winston';
-import { createLogger } from './logger-config';
-import { AppError } from '../errors/app-error';
+import { Logger } from "winston";
+import { AppError } from "@/shared/errors/app-error";
+import { createLogger } from "@/shared/logging/logger-config";
 
 export interface LogContext {
   correlationId?: string;
@@ -24,7 +24,7 @@ export interface PerformanceMetrics {
 export class LoggerService {
   private logger: Logger;
 
-  constructor(service: string = 'payment-processor') {
+  constructor(service: string = "payment-processor") {
     this.logger = createLogger(service);
   }
 
@@ -45,62 +45,92 @@ export class LoggerService {
     this.logger.error(message, errorContext);
   }
 
-  logPaymentAttempt(correlationId: string, amount: number, processor: string): void {
-    this.info('Payment processing started', {
+  logPaymentAttempt(
+    correlationId: string,
+    amount: number,
+    processor: string
+  ): void {
+    this.info("Payment processing started", {
       correlationId,
       amount,
       processor,
-      operation: 'payment_attempt'
+      operation: "payment_attempt",
     });
   }
 
-  logPaymentSuccess(correlationId: string, amount: number, processor: string, duration: number): void {
-    this.info('Payment processed successfully', {
+  logPaymentSuccess(
+    correlationId: string,
+    amount: number,
+    processor: string,
+    duration: number
+  ): void {
+    this.info("Payment processed successfully", {
       correlationId,
       amount,
       processor,
       duration,
-      operation: 'payment_success'
+      operation: "payment_success",
     });
   }
 
-  logPaymentFailure(correlationId: string, amount: number, processor: string, error: Error, duration: number): void {
-    this.error('Payment processing failed', error, {
+  logPaymentFailure(
+    correlationId: string,
+    amount: number,
+    processor: string,
+    error: Error,
+    duration: number
+  ): void {
+    this.error("Payment processing failed", error, {
       correlationId,
       amount,
       processor,
       duration,
-      operation: 'payment_failure'
+      operation: "payment_failure",
     });
   }
 
-  logHealthCheck(processor: string, failing: boolean, responseTime: number): void {
-    const level = failing ? 'warn' : 'debug';
-    this.logger[level]('Health check completed', {
+  logHealthCheck(
+    processor: string,
+    failing: boolean,
+    responseTime: number
+  ): void {
+    const level = failing ? "warn" : "debug";
+    this.logger[level]("Health check completed", {
       processor,
       failing,
       responseTime,
-      operation: 'health_check'
+      operation: "health_check",
     });
   }
 
-  logProcessorFallback(correlationId: string, fromProcessor: string, toProcessor: string, reason: string): void {
-    this.warn('Processor fallback triggered', {
+  logProcessorFallback(
+    correlationId: string,
+    fromProcessor: string,
+    toProcessor: string,
+    reason: string
+  ): void {
+    this.warn("Processor fallback triggered", {
       correlationId,
       fromProcessor,
       toProcessor,
       reason,
-      operation: 'processor_fallback'
+      operation: "processor_fallback",
     });
   }
 
-  logDatabaseOperation(operation: string, table: string, duration: number, success: boolean, error?: Error): void {
-    const message = `Database ${operation} ${success ? 'completed' : 'failed'}`;
+  logDatabaseOperation(
+    operation: string,
+    table: string,
+    duration: number,
+    success: boolean,
+    error?: Error
+  ): void {
+    const message = `Database ${operation} ${success ? "completed" : "failed"}`;
     const context = {
       operation: `db_${operation}`,
       table,
       duration,
-      success
+      success,
     };
 
     if (success) {
@@ -110,71 +140,85 @@ export class LoggerService {
     }
   }
 
-  logCacheOperation(operation: string, key: string, hit: boolean, duration: number): void {
+  logCacheOperation(
+    operation: string,
+    key: string,
+    hit: boolean,
+    duration: number
+  ): void {
     this.debug(`Cache ${operation}`, {
       operation: `cache_${operation}`,
       key,
       hit,
-      duration
+      duration,
     });
   }
 
   logPerformanceMetrics(metrics: PerformanceMetrics): void {
     const { operation, duration, success, ...meta } = metrics;
-    
+
     if (duration > 1000) {
       this.warn(`Slow operation detected: ${operation}`, {
-        operation: 'performance_warning',
+        operation: "performance_warning",
         duration,
         success,
-        ...meta
+        ...meta,
       });
     } else {
       this.debug(`Performance: ${operation}`, {
-        operation: 'performance_metric',
+        operation: "performance_metric",
         duration,
         success,
-        ...meta
+        ...meta,
       });
     }
   }
 
-  logHttpRequest(method: string, url: string, statusCode: number, duration: number, userAgent?: string): void {
-    const level = statusCode >= 400 ? 'warn' : 'info';
-    this.logger[level]('HTTP Request', {
+  logHttpRequest(
+    method: string,
+    url: string,
+    statusCode: number,
+    duration: number,
+    userAgent?: string
+  ): void {
+    const level = statusCode >= 400 ? "warn" : "info";
+    this.logger[level]("HTTP Request", {
       method,
       url,
       statusCode,
       duration,
       userAgent,
-      operation: 'http_request'
+      operation: "http_request",
     });
   }
 
   logSystemStartup(port: number, environment: string): void {
-    this.info('Application started successfully', {
+    this.info("Application started successfully", {
       port,
       environment,
-      operation: 'system_startup'
+      operation: "system_startup",
     });
   }
 
   logSystemShutdown(reason: string): void {
-    this.info('Application shutting down', {
+    this.info("Application shutting down", {
       reason,
-      operation: 'system_shutdown'
+      operation: "system_shutdown",
     });
   }
 
   logConfigurationLoad(service: string, configCount: number): void {
-    this.info('Configuration loaded', {
+    this.info("Configuration loaded", {
       service,
       configCount,
-      operation: 'config_load'
+      operation: "config_load",
     });
   }
 
-  private buildErrorContext(error?: Error | AppError, context?: LogContext): LogContext {
+  private buildErrorContext(
+    error?: Error | AppError,
+    context?: LogContext
+  ): LogContext {
     const baseContext = context || {};
 
     if (!error) {

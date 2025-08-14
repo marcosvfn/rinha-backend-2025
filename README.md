@@ -1,44 +1,36 @@
 # Rinha de Backend 2025 - Payment Processor
 
-Backend intermediário que roteia pagamentos entre dois processadores (Default 5% taxa, Fallback 15% taxa) com estratégia de otimização baseada em health checks e circuit breakers.
+Sistema intermediário que roteia pagamentos entre dois processadores (Default 5% taxa, Fallback 15% taxa) com estratégia de otimização inteligente.
 
-## 🏗️ Arquitetura
+## Arquitetura
 
-- **Clean Architecture** com TypeScript
+- **Clean Architecture** Node/TypeScript
 - **Load Balancer**: nginx com 2 instâncias da aplicação
 - **Database**: PostgreSQL com Prisma ORM
 - **Cache**: Redis para health checks
-- **Containers**: Docker Compose
-- **Performance**: p99 < 10ms (bônus até 20%)
+- **Filas**: BullMQ para processamento assíncrono
+- **Workers**: Processamento em background com retry
+- **Performance**: p99 < 10ms
 
-## 🚀 Execução
+## Execução
 
-### 1. Iniciar Payment Processors (obrigatório primeiro)
-```bash
-# Na raiz do projeto rinha-de-backend-2025
-cd payment-processor
-docker compose up -d
-```
+### 1. Iniciar Aplicação
 
-### 2. Iniciar Nossa Aplicação
 ```bash
 cd solution
 docker compose up -d
 ```
 
-### 3. Verificar Status
-```bash
-# API disponível em http://localhost:9999
-curl http://localhost:9999/health
+### 2. Verificar Status
 
-# Payment processors
-curl http://localhost:8001/payments/service-health  # Default
-curl http://localhost:8002/payments/service-health  # Fallback
+```bash
+curl http://localhost:9999/health
 ```
 
-## 📊 Endpoints
+## Endpoints
 
 ### POST /payments
+
 ```bash
 curl -X POST http://localhost:9999/payments \
   -H "Content-Type: application/json" \
@@ -49,56 +41,40 @@ curl -X POST http://localhost:9999/payments \
 ```
 
 ### GET /payments-summary
+
 ```bash
 curl "http://localhost:9999/payments-summary?from=2024-01-01T00:00:00.000Z&to=2024-12-31T23:59:59.999Z"
 ```
 
-## 🎯 Estratégia de Otimização
+## Estratégia de Processamento
 
-1. **Preferência Default**: Sempre tenta processador Default primeiro (5% taxa)
-2. **Rate Limiting**: Health check limitado a 1 req/5s por processador
-3. **Circuit Breaker**: Se Default falha, usa Fallback (15% taxa)
-4. **Cache**: Status de saúde cached no Redis para performance
+1. **Processamento Assíncrono**: Pagamentos são enfileirados e processados em background
+2. **Preferência Default**: Workers tentam processador Default primeiro (5% taxa)
+3. **Rate Limiting**: Health check limitado a 1 req/5s por processador
+4. **Circuit Breaker**: Se Default falha, usa Fallback (15% taxa)
+5. **Retry**: Jobs com falha são reprocessados até 3x com backoff exponencial
+6. **Cache**: Status de saúde cached no Redis para performance
 
-## 📈 Recursos e Performance
+## Recursos
 
-- **CPU Total**: 1.5 unidades
-- **Memória Total**: 350MB
-- **Instâncias**: 2x aplicação + nginx + postgres + redis
-- **Porta**: 9999 (conforme especificação)
-- **Health Checks**: Implementados em todos os serviços
+### CPU (1.5 unidades total)
 
-## 🛠️ Tecnologias
+- **nginx**: 0.1 CPU
+- **app1**: 0.5 CPU
+- **app2**: 0.5 CPU
+- **worker1**: 0.3 CPU
+- **worker2**: 0.3 CPU
+- **postgres**: 0.3 CPU
+- **redis**: 0.1 CPU
 
-- **Linguagem**: TypeScript + Node.js
-- **Framework**: Express.js
-- **Database**: PostgreSQL + Prisma ORM
-- **Cache**: Redis
-- **Load Balancer**: nginx
-- **Containers**: Docker Compose
+### Memória (350MB total)
 
-## 🔍 Monitoramento
+- **nginx**: 32MB
+- **app1**: 128MB
+- **app2**: 128MB
+- **worker1**: 96MB
+- **worker2**: 96MB
+- **postgres**: 48MB
+- **redis**: 16MB
 
-- Logs estruturados (Winston)
-- Performance metrics automáticos
-- Health checks com timeout
-- Rate limiting de API
-
-## 🏃‍♂️ Desenvolvimento Local
-
-```bash
-# Instalar dependências
-npm install
-
-# Configurar ambiente
-cp .env.example .env
-
-# Gerar Prisma client
-npm run db:generate
-
-# Build
-npm run build
-
-# Executar em dev
-npm run dev
-```
+**Porta**: 9999

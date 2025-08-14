@@ -26,10 +26,10 @@ export const APP_CONSTANTS = {
     HEALTH_CHECK_LIMIT: (processor: string) => `health_check_limit:${processor}`,
   },
   LOGGING: {
-    MAX_FILE_SIZE: '20m',
+    MAX_FILE_SIZE: "20m",
     MAX_FILES: 5,
-    LOG_LEVEL: process.env.LOG_LEVEL || 'info',
-    LOG_FORMAT: process.env.LOG_FORMAT || 'json',
-    LOG_DIR: process.env.LOG_DIR || 'logs',
+    LOG_LEVEL: process.env.LOG_LEVEL || "info",
+    LOG_FORMAT: process.env.LOG_FORMAT || "json",
+    LOG_DIR: process.env.LOG_DIR || "logs",
   },
 } as const;

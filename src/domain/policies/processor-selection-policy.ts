@@ -1,5 +1,5 @@
-import { ProcessorConfig } from '../entities/payment';
-import { ProcessorHealthStatus } from '../entities/payment';
+import { ProcessorConfig } from "@/domain/entities/payment";
+import { ProcessorHealthStatus } from "@/domain/entities/payment";
 
 export interface ProcessorSelectionContext {
   defaultProcessor: ProcessorConfig;
@@ -45,6 +45,6 @@ export class ProcessorSelectionPolicy {
    */
   static getProcessorPriority(processor: ProcessorConfig): number {
     // Default tem prioridade maior (taxa menor)
-    return processor.name === 'default' ? 1 : 2;
+    return processor.name === "default" ? 1 : 2;
   }
 }
