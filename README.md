@@ -1,5 +1,7 @@
 # Rinha de Backend 2025 - Payment Processor
 
+Descrição do desafio proposto em: https://github.com/zanfranceschi/rinha-de-backend-2025/blob/75ae59c6b148f0dce0180ba20816314d0d25ad27/INSTRUCOES.md
+
 Sistema intermediário que roteia pagamentos entre dois processadores (Default 5% taxa, Fallback 15% taxa) com estratégia de otimização inteligente.
 
 ## Arquitetura
@@ -78,3 +80,46 @@ curl "http://localhost:9999/payments-summary?from=2024-01-01T00:00:00.000Z&to=20
 - **redis**: 16MB
 
 **Porta**: 9999
+
+## Fluxo de Processamento
+
+```mermaid
+flowchart TD
+    Client[Client] --> Nginx[Nginx Load Balancer]
+    Nginx --> App1[App Instance 1]
+    Nginx --> App2[App Instance 2]
+
+    App1 --> HealthCheck{Check Default Health}
+    App2 --> HealthCheck
+
+    HealthCheck -->|Cache Hit| CacheDecision{Cache Status}
+    HealthCheck -->|Cache Miss| DefaultProcessor[🟢 Default Processor<br/>5% fee]
+
+    CacheDecision -->|Healthy| DefaultProcessor
+    CacheDecision -->|Unhealthy| FallbackProcessor[🔴 Fallback Processor<br/>15% fee]
+
+    DefaultProcessor -->|✅ Success| QueueJob1[Queue Payment Job]
+    DefaultProcessor -->|❌ Fail| FallbackProcessor
+
+    FallbackProcessor -->|✅ Success| QueueJob2[Queue Payment Job]
+    FallbackProcessor -->|❌ Fail| Error[Return Error]
+
+    QueueJob1 --> RedisQueue[Redis Queue]
+    QueueJob2 --> RedisQueue
+
+    RedisQueue --> Worker1[Worker 1]
+    RedisQueue --> Worker2[Worker 2]
+
+    Worker1 --> PostgreSQL[🗄️ PostgreSQL Database]
+    Worker2 --> PostgreSQL
+
+    subgraph "Health Cache Strategy"
+        HealthCheck -.->|Rate Limit 5s| RedisCache[Redis Cache]
+        RedisCache -.-> HealthCheck
+    end
+
+    style DefaultProcessor fill:#90EE90
+    style FallbackProcessor fill:#FFB6C1
+    style Error fill:#FF6B6B
+    style PostgreSQL fill:#4169E1,color:#fff
+```
