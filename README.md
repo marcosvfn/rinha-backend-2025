@@ -117,9 +117,4 @@ flowchart TD
         HealthCheck -.->|Rate Limit 5s| RedisCache[Redis Cache]
         RedisCache -.-> HealthCheck
     end
-
-    style DefaultProcessor fill:#90EE90
-    style FallbackProcessor fill:#FFB6C1
-    style Error fill:#FF6B6B
-    style PostgreSQL fill:#4169E1,color:#fff
 ```
