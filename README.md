@@ -19,7 +19,6 @@ Sistema intermediário que roteia pagamentos entre dois processadores (Default 5
 ### 1. Iniciar Aplicação
 
 ```bash
-cd solution
 docker compose up -d
 ```
 
