@@ -1,19 +1,19 @@
-import { ErrorCode } from "@/shared/enums/payment-enums";
+import { ErrorCode } from "../../shared/enums/payment-enums";
 import {
   ConflictError,
   InternalError,
   ServiceUnavailableError,
-} from "@/shared/errors/app-error";
-import { Result } from "@/shared/result/result";
-import { Payment, ProcessorConfig } from "@/domain/entities/payment";
-import { PaymentRepository } from "@/domain/repositories/payment-repository";
-import { HealthRepository } from "@/domain/repositories/health-repository";
-import { CorrelationId } from "@/domain/value-objects/correlation-id";
-import { Money } from "@/domain/value-objects/money";
-import { ProcessorType } from "@/domain/value-objects/processor-type";
-import { PaymentProcessorService } from "@/domain/services/payment-processor-service";
-import { ProcessorOrchestrationService } from "@/application/services/processor-orchestration-service";
-import { BaseUseCase } from "@/application/base/base-use-case";
+} from "../../shared/errors/app-error";
+import { Result } from "../../shared/result/result";
+import { Payment, ProcessorConfig } from "../../domain/entities/payment";
+import { PaymentRepository } from "../../domain/repositories/payment-repository";
+import { HealthRepository } from "../../domain/repositories/health-repository";
+import { CorrelationId } from "../../domain/value-objects/correlation-id";
+import { Money } from "../../domain/value-objects/money";
+import { ProcessorType } from "../../domain/value-objects/processor-type";
+import { PaymentProcessorService } from "../../domain/services/payment-processor-service";
+import { ProcessorOrchestrationService } from "../services/processor-orchestration-service";
+import { BaseUseCase } from "../base/base-use-case";
 
 export interface ProcessPaymentRequest {
   correlationId: CorrelationId;

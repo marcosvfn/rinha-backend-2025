@@ -1,8 +1,8 @@
 import axios, { AxiosInstance } from "axios";
-import { Payment, ProcessorConfig } from "@/domain/entities/payment";
-import { PaymentProcessorService } from "@/domain/services/payment-processor-service";
-import { LoggerService } from "@/shared/logging";
-import { APP_CONSTANTS } from "@/shared/constants/app-constants";
+import { Payment, ProcessorConfig } from "../../domain/entities/payment";
+import { PaymentProcessorService } from "../../domain/services/payment-processor-service";
+import { LoggerService } from "../../shared/logging";
+import { APP_CONSTANTS } from "../../shared/constants/app-constants";
 
 export class HttpPaymentProcessorService implements PaymentProcessorService {
   private httpClient: AxiosInstance;

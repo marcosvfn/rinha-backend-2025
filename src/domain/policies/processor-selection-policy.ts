@@ -1,5 +1,5 @@
-import { ProcessorConfig } from "@/domain/entities/payment";
-import { ProcessorHealthStatus } from "@/domain/entities/payment";
+import { ProcessorConfig } from "../entities/payment";
+import { ProcessorHealthStatus } from "../entities/payment";
 
 export interface ProcessorSelectionContext {
   defaultProcessor: ProcessorConfig;

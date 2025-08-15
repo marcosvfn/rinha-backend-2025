@@ -1,18 +1,18 @@
-import { GetPaymentSummaryUseCase } from "@/application/use-cases/get-payment-summary-use-case";
-import { ProcessPaymentUseCase } from "@/application/use-cases/process-payment-use-case";
-import { SubmitPaymentUseCase } from "@/application/use-cases/submit-payment-use-case";
-import { ProcessorConfig } from "@/domain/entities/payment";
-import { HealthRepository } from "@/domain/repositories/health-repository";
-import { PaymentRepository } from "@/domain/repositories/payment-repository";
-import { PaymentProcessorService } from "@/domain/services/payment-processor-service";
-import { PaymentController } from "@/presentation/controllers/payment-controller";
-import { DIContainer } from "@/shared/interfaces/container";
-import { RedisHealthRepository } from "@/infrastructure/cache/redis-health-repository";
-import { PrismaPaymentRepository } from "@/infrastructure/database/prisma-payment-repository";
-import { HttpPaymentProcessorService } from "@/infrastructure/http/payment-processor-service";
-import { PaymentQueue } from "@/infrastructure/queue/payment-queue";
-import { createPrismaClient } from "@/infrastructure/config/prisma";
-import { createRedisClient } from "@/infrastructure/config/redis";
+import { GetPaymentSummaryUseCase } from "../../application/use-cases/get-payment-summary-use-case";
+import { ProcessPaymentUseCase } from "../../application/use-cases/process-payment-use-case";
+import { SubmitPaymentUseCase } from "../../application/use-cases/submit-payment-use-case";
+import { ProcessorConfig } from "../../domain/entities/payment";
+import { HealthRepository } from "../../domain/repositories/health-repository";
+import { PaymentRepository } from "../../domain/repositories/payment-repository";
+import { PaymentProcessorService } from "../../domain/services/payment-processor-service";
+import { PaymentController } from "../../presentation/controllers/payment-controller";
+import { DIContainer } from "../../shared/interfaces/container";
+import { RedisHealthRepository } from "../cache/redis-health-repository";
+import { PrismaPaymentRepository } from "../database/prisma-payment-repository";
+import { HttpPaymentProcessorService } from "../http/payment-processor-service";
+import { PaymentQueue } from "../queue/payment-queue";
+import { createPrismaClient } from "./prisma";
+import { createRedisClient } from "./redis";
 
 export const setupDependencies = async (): Promise<DIContainer> => {
   const container = new DIContainer();

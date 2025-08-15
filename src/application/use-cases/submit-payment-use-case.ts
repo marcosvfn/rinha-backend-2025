@@ -1,12 +1,12 @@
-import { ErrorCode } from "@/shared/enums/payment-enums";
-import { ConflictError, InternalError } from "@/shared/errors/app-error";
-import { Result } from "@/shared/result/result";
-import { Payment } from "@/domain/entities/payment";
-import { PaymentRepository } from "@/domain/repositories/payment-repository";
-import { CorrelationId } from "@/domain/value-objects/correlation-id";
-import { Money } from "@/domain/value-objects/money";
-import { BaseUseCase } from "@/application/base/base-use-case";
-import { PaymentQueue } from "@/infrastructure/queue/payment-queue";
+import { ErrorCode } from "../../shared/enums/payment-enums";
+import { ConflictError, InternalError } from "../../shared/errors/app-error";
+import { Result } from "../../shared/result/result";
+import { Payment } from "../../domain/entities/payment";
+import { PaymentRepository } from "../../domain/repositories/payment-repository";
+import { CorrelationId } from "../../domain/value-objects/correlation-id";
+import { Money } from "../../domain/value-objects/money";
+import { BaseUseCase } from "../base/base-use-case";
+import { PaymentQueue } from "../../infrastructure/queue/payment-queue";
 
 export interface SubmitPaymentRequest {
   correlationId: CorrelationId;

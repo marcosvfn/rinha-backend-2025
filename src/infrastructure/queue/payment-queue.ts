@@ -1,7 +1,7 @@
 import { Queue } from "bullmq";
 import IORedis from "ioredis";
-import { CorrelationId } from "@/domain/value-objects/correlation-id";
-import { Money } from "@/domain/value-objects/money";
+import { CorrelationId } from "../../domain/value-objects/correlation-id";
+import { Money } from "../../domain/value-objects/money";
 
 export interface PaymentJobData {
   correlationId: string;

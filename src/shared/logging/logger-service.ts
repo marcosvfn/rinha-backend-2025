@@ -1,6 +1,6 @@
 import { Logger } from "winston";
-import { AppError } from "@/shared/errors/app-error";
-import { createLogger } from "@/shared/logging/logger-config";
+import { AppError } from "../errors/app-error";
+import { createLogger } from "./logger-config";
 
 export interface LogContext {
   correlationId?: string;

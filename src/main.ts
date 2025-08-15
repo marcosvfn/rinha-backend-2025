@@ -4,10 +4,10 @@ import cors from "cors";
 import "dotenv/config";
 import express, { Application, NextFunction, Request, Response } from "express";
 import helmet from "helmet";
-import { setupDependencies } from "@/infrastructure/config/app-config";
-import { PaymentController } from "@/presentation/controllers/payment-controller";
-import { createPaymentRoutes } from "@/presentation/routes/payment-routes";
-import { LoggerService } from "@/shared/logging";
+import { setupDependencies } from "./infrastructure/config/app-config";
+import { PaymentController } from "./presentation/controllers/payment-controller";
+import { createPaymentRoutes } from "./presentation/routes/payment-routes";
+import { LoggerService } from "./shared/logging";
 
 const PORT = process.env.PORT || 3000;
 

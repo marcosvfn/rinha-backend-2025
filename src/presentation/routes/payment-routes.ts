@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { PaymentController } from "@/presentation/controllers/payment-controller";
+import { PaymentController } from "../controllers/payment-controller";
 
 export const createPaymentRoutes = (paymentController: PaymentController): Router => {
   const router = Router();

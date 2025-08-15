@@ -1,5 +1,5 @@
-import { ProcessorHealthStatus } from "@/domain/entities/payment";
-import { ProcessorType } from "@/domain/value-objects/processor-type";
+import { ProcessorHealthStatus } from "../entities/payment";
+import { ProcessorType } from "../value-objects/processor-type";
 
 export interface HealthRepository {
   getHealthStatus(processor: ProcessorType): Promise<ProcessorHealthStatus | null>;

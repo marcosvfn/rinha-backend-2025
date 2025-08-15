@@ -1,5 +1,5 @@
 import winston from "winston";
-import { APP_CONSTANTS } from "@/shared/constants/app-constants";
+import { APP_CONSTANTS } from "../constants/app-constants";
 
 const isDevelopment = process.env.NODE_ENV === "development";
 const isProduction = process.env.NODE_ENV === "production";

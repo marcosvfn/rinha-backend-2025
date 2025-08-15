@@ -1,11 +1,11 @@
 import { PrismaClient } from "@prisma/client";
-import { Payment, PaymentSummary } from "@/domain/entities/payment";
-import { PaymentRepository } from "@/domain/repositories/payment-repository";
-import { CorrelationId } from "@/domain/value-objects/correlation-id";
-import { Money } from "@/domain/value-objects/money";
-import { ProcessorType } from "@/domain/value-objects/processor-type";
-import { PaymentStatus, ProcessorType as ProcessorTypeEnum } from "@/shared/enums/payment-enums";
-import { LoggerService } from "@/shared/logging";
+import { Payment, PaymentSummary } from "../../domain/entities/payment";
+import { PaymentRepository } from "../../domain/repositories/payment-repository";
+import { CorrelationId } from "../../domain/value-objects/correlation-id";
+import { Money } from "../../domain/value-objects/money";
+import { ProcessorType } from "../../domain/value-objects/processor-type";
+import { PaymentStatus, ProcessorType as ProcessorTypeEnum } from "../../shared/enums/payment-enums";
+import { LoggerService } from "../../shared/logging";
 
 export class PrismaPaymentRepository implements PaymentRepository {
   private logger: LoggerService;

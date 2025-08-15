@@ -1,11 +1,11 @@
 import { Worker, Job } from "bullmq";
 import IORedis from "ioredis";
-import { PaymentJobData } from "@/infrastructure/queue/payment-queue";
-import { ProcessPaymentUseCase, ProcessPaymentRequest } from "@/application/use-cases/process-payment-use-case";
-import { CorrelationId } from "@/domain/value-objects/correlation-id";
-import { Money } from "@/domain/value-objects/money";
-import { LoggerService } from "@/shared/logging";
-import { AppConfig } from "@/infrastructure/config/app-config-singleton";
+import { PaymentJobData } from "./payment-queue";
+import { ProcessPaymentUseCase, ProcessPaymentRequest } from "../../application/use-cases/process-payment-use-case";
+import { CorrelationId } from "../../domain/value-objects/correlation-id";
+import { Money } from "../../domain/value-objects/money";
+import { LoggerService } from "../../shared/logging";
+import { AppConfig } from "../config/app-config-singleton";
 
 export class PaymentWorker {
   private worker: Worker<PaymentJobData>;

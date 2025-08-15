@@ -1,5 +1,5 @@
-import { LoggerService } from "@/shared/logging";
-import { Result } from "@/shared/result/result";
+import { LoggerService } from "../../shared/logging";
+import { Result } from "../../shared/result/result";
 
 export interface UseCase<TRequest, TResponse> {
   execute(request: TRequest): Promise<Result<TResponse, Error>>;

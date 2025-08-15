@@ -1,6 +1,6 @@
-import { DIContainer } from "@/shared/interfaces/container";
-import { ProcessPaymentUseCase } from "@/application/use-cases/process-payment-use-case";
-import { setupDependencies } from "@/infrastructure/config/app-config";
+import { DIContainer } from "../../shared/interfaces/container";
+import { ProcessPaymentUseCase } from "../../application/use-cases/process-payment-use-case";
+import { setupDependencies } from "./app-config";
 
 export class AppConfig {
   private static instance: AppConfig;

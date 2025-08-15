@@ -1,13 +1,13 @@
-import { GetPaymentSummaryUseCase } from "@/application/use-cases/get-payment-summary-use-case";
-import { SubmitPaymentUseCase } from "@/application/use-cases/submit-payment-use-case";
+import { GetPaymentSummaryUseCase } from "../../application/use-cases/get-payment-summary-use-case";
+import { SubmitPaymentUseCase } from "../../application/use-cases/submit-payment-use-case";
 import {
   CreatePaymentDTO,
   PaymentSummaryQueryDTO,
-} from "@/presentation/dto/payment-dto";
-import { HttpStatusCode } from "@/shared/enums/payment-enums";
-import { AppError } from "@/shared/errors/app-error";
-import { LoggerService } from "@/shared/logging";
-import { PaymentValidator } from "@/shared/validators/payment-validator";
+} from "../dto/payment-dto";
+import { HttpStatusCode } from "../../shared/enums/payment-enums";
+import { AppError } from "../../shared/errors/app-error";
+import { LoggerService } from "../../shared/logging";
+import { PaymentValidator } from "../../shared/validators/payment-validator";
 import { Request, Response } from "express";
 
 export class PaymentController {

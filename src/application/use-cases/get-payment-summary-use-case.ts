@@ -1,9 +1,9 @@
-import { PaymentSummary } from "@/domain/entities/payment";
-import { PaymentRepository } from "@/domain/repositories/payment-repository";
-import { BaseUseCase } from "@/application/base/base-use-case";
-import { Result } from "@/shared/result/result";
-import { InternalError } from "@/shared/errors/app-error";
-import { ErrorCode } from "@/shared/enums/payment-enums";
+import { PaymentSummary } from "../../domain/entities/payment";
+import { PaymentRepository } from "../../domain/repositories/payment-repository";
+import { BaseUseCase } from "../base/base-use-case";
+import { Result } from "../../shared/result/result";
+import { InternalError } from "../../shared/errors/app-error";
+import { ErrorCode } from "../../shared/enums/payment-enums";
 
 export interface GetPaymentSummaryRequest {
   from?: string;

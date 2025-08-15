@@ -1,4 +1,4 @@
-import { ErrorCode, HttpStatusCode } from "@/shared/enums/payment-enums";
+import { ErrorCode, HttpStatusCode } from "../enums/payment-enums";
 
 export abstract class AppError extends Error {
   public readonly statusCode: HttpStatusCode;

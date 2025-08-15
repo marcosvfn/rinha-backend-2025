@@ -1,9 +1,9 @@
 import { RedisClientType } from "redis";
-import { ProcessorHealthStatus } from "@/domain/entities/payment";
-import { HealthRepository } from "@/domain/repositories/health-repository";
-import { ProcessorType } from "@/domain/value-objects/processor-type";
-import { APP_CONSTANTS } from "@/shared/constants/app-constants";
-import { LoggerService } from "@/shared/logging";
+import { ProcessorHealthStatus } from "../../domain/entities/payment";
+import { HealthRepository } from "../../domain/repositories/health-repository";
+import { ProcessorType } from "../../domain/value-objects/processor-type";
+import { APP_CONSTANTS } from "../../shared/constants/app-constants";
+import { LoggerService } from "../../shared/logging";
 
 export class RedisHealthRepository implements HealthRepository {
   private logger: LoggerService;

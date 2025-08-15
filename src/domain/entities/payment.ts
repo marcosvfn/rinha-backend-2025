@@ -1,7 +1,7 @@
-import { CorrelationId } from "@/domain/value-objects/correlation-id";
-import { Money } from "@/domain/value-objects/money";
-import { ProcessorType } from "@/domain/value-objects/processor-type";
-import { PaymentStatus } from "@/shared/enums/payment-enums";
+import { CorrelationId } from "../value-objects/correlation-id";
+import { Money } from "../value-objects/money";
+import { ProcessorType } from "../value-objects/processor-type";
+import { PaymentStatus } from "../../shared/enums/payment-enums";
 
 export class Payment {
   private constructor(

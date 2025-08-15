@@ -1,6 +1,6 @@
-import { APP_CONSTANTS } from "@/shared/constants/app-constants";
-import { ValidationError } from "@/shared/errors/app-error";
-import { ErrorCode } from "@/shared/enums/payment-enums";
+import { APP_CONSTANTS } from "../../shared/constants/app-constants";
+import { ValidationError } from "../../shared/errors/app-error";
+import { ErrorCode } from "../../shared/enums/payment-enums";
 
 export class CorrelationId {
   private readonly _value: string;

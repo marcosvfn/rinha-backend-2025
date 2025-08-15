@@ -1,6 +1,6 @@
-import { AppConfig } from "@/infrastructure/config/app-config-singleton";
-import { PaymentWorker } from "@/infrastructure/queue/payment-worker";
-import { LoggerService } from "@/shared/logging";
+import { AppConfig } from "./infrastructure/config/app-config-singleton";
+import { PaymentWorker } from "./infrastructure/queue/payment-worker";
+import { LoggerService } from "./shared/logging";
 
 const logger = new LoggerService("worker");
 

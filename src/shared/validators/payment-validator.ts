@@ -1,7 +1,7 @@
-import { CorrelationId } from "@/domain/value-objects/correlation-id";
-import { Money } from "@/domain/value-objects/money";
-import { ErrorCode } from "@/shared/enums/payment-enums";
-import { ValidationError } from "@/shared/errors/app-error";
+import { CorrelationId } from "../../domain/value-objects/correlation-id";
+import { Money } from "../../domain/value-objects/money";
+import { ErrorCode } from "../enums/payment-enums";
+import { ValidationError } from "../errors/app-error";
 
 export interface PaymentInput {
   correlationId: string;

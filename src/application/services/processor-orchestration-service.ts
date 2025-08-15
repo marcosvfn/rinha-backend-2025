@@ -1,9 +1,9 @@
-import { ProcessorConfig } from "@/domain/entities/payment";
-import { ProcessorType } from "@/domain/value-objects/processor-type";
-import { HealthRepository } from "@/domain/repositories/health-repository";
-import { PaymentProcessorService } from "@/domain/services/payment-processor-service";
-import { ProcessorSelectionPolicy } from "@/domain/policies/processor-selection-policy";
-import { LoggerService } from "@/shared/logging";
+import { ProcessorConfig } from "../../domain/entities/payment";
+import { ProcessorType } from "../../domain/value-objects/processor-type";
+import { HealthRepository } from "../../domain/repositories/health-repository";
+import { PaymentProcessorService } from "../../domain/services/payment-processor-service";
+import { ProcessorSelectionPolicy } from "../../domain/policies/processor-selection-policy";
+import { LoggerService } from "../../shared/logging";
 
 export class ProcessorOrchestrationService {
   private logger: LoggerService;
